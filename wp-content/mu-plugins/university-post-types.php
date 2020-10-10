@@ -26,7 +26,7 @@ function university_post_types () {
 			'singular_name' => 'Event'
 		),
 		'menu_icon' => 'dashicons-calendar',
-		'supports' => array('title', 'editor', 'author')
+		'supports' => array('title', 'editor', 'author', 'excerpt')
 	));
 }
 add_action('init', 'university_post_types');
