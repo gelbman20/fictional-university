@@ -1,6 +1,5 @@
 <?php
     get_header();
-
     $currentID = get_the_ID();
     $parentID  = wp_get_post_parent_id( $currentID );
 ?>
@@ -56,7 +55,7 @@
 
             <?php if ($upcomingEvents->have_posts()): ?>
                 <hr class="section-break">
-                <h2 class="headline headline--medium">Related Events</h2>
+                <h2 class="headline headline--medium">Related <?= get_the_title($currentID) ?> Events</h2>
                 <?php while ($upcomingEvents->have_posts()): $upcomingEvents->the_post();
                     $eventDate = null;
                     $eventMonth = null;
