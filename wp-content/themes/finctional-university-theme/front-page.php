@@ -32,12 +32,6 @@
                     )
                 ));
 
-                foreach ($posts as $post) {
-                    if (is_numeric($post['event_date']) >= is_numeric($today)) {
-                        echo $post;
-                    }
-                }
-
                 while ($homepageEvents->have_posts()): $homepageEvents->the_post();
             ?>
                     <?php
