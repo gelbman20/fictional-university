@@ -46,6 +46,10 @@ $parentID  = wp_get_post_parent_id( $currentID );
 		<?php endif; ?>
 	<?php endwhile; ?>
 	<?= paginate_links(); ?>
+
+    <hr class="section-break">
+
+    <p>Looking for a recap a past events? <a href="<?php site_url('past-events') ?>">Check our past events archive</a></p>
 </div>
 
 <?php get_footer(); ?>
