@@ -6,7 +6,7 @@
         <h1 class="headline headline--large">Welcome!</h1>
         <h2 class="headline headline--medium">We think you&rsquo;ll like it here.</h2>
         <h3 class="headline headline--small">Why don&rsquo;t you check out the <strong>major</strong> you&rsquo;re interested in?</h3>
-        <a href="#" class="btn btn--large btn--blue">Find Your Major</a>
+        <a href="<?= get_post_type_archive_link('program') ?>" class="btn btn--large btn--blue">Find Your Major</a>
     </div>
 </div>
 
@@ -15,49 +15,29 @@
         <div class="full-width-split__inner">
             <h2 class="headline headline--small-plus t-center">Upcoming Events</h2>
             <?php
-                $today = date('Ymd');
-                $homepageEvents = new WP_Query(array(
-                    'posts_per_page' => -1,
-                    'post_type' => 'event',
-                    'meta_key' => 'event_date',
-                    'orderby' => 'meta_value_num',
-                    'order' => 'ASC',
-                    'meta_query' => array(
-                        array(
-                            'key' => 'event_date',
-                            'compare' => '>',
-                            'value' => $today,
-                            'type' => 'numeric'
-                        )
+            $today = date('Ymd');
+            $homepageEvents = new WP_Query(array(
+                'posts_per_page' => -1,
+                'post_type' => 'event',
+                'meta_key' => 'event_date',
+                'orderby' => 'meta_value_num',
+                'order' => 'ASC',
+                'meta_query' => array(
+                    array(
+                        'key' => 'event_date',
+                        'compare' => '>',
+                        'value' => $today,
+                        'type' => 'numeric'
                     )
-                ));
+                )
+            ));
 
-                while ($homepageEvents->have_posts()): $homepageEvents->the_post();
-                    $eventDate = null;
-                    $eventMonth = null;
-                    $eventDay = null;
-
-                    try {
-                        $eventDate = new DateTime( get_field( 'event_date' ) );
-                        $eventMonth = $eventDate->format('M');
-                        $eventDay = $eventDate->format('d');
-                    } catch ( Exception $e ) {}
+            while ($homepageEvents->have_posts()) {
+              $homepageEvents->the_post();
+              get_template_part('template-parts/event');
+            }
+            wp_reset_postdata();
             ?>
-                <?php if ($eventDate): ?>
-                    <div class="event-summary">
-                        <a class="event-summary__date t-center" href="<?php the_permalink(); ?>">
-                            <span class="event-summary__month"><?= $eventMonth; ?></span>
-                            <span class="event-summary__day"><?= $eventDay ?></span>
-                        </a>
-                        <div class="event-summary__content">
-                            <h5 class="event-summary__title headline headline--tiny"><a href="<?php the_permalink(); ?>"><?php the_title() ?></a></h5>
-                            <p><?= has_excerpt() ? get_the_excerpt() : wp_trim_words(get_the_content(), 18) ?> <a href="<?php the_permalink(); ?>" class="nu gray">Learn more</a></p>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            <?php endwhile; ?>
-
-	        <?php wp_reset_postdata(); ?>
 
             <p class="t-center no-margin"><a href="<?= get_post_type_archive_link('event') ?>" class="btn btn--blue">View All Events</a></p>
 
