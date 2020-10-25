@@ -3,10 +3,10 @@ settings = require('./settings');
 
 module.exports = {
   entry: {
-    App: settings.themeLocation + "assets/js/scripts.js"
+    App: settings.themeLocation + "js/scripts.js"
   },
   output: {
-    path: path.resolve(__dirname, settings.themeLocation + "assets/js"),
+    path: path.resolve(__dirname, settings.themeLocation + "js"),
     filename: "scripts-bundled.js"
   },
   module: {
