@@ -1,5 +1,15 @@
 <?php
 
+function university_custom_rest () {
+    register_rest_field('post', 'authorName', array(
+        'get_callback' => function () {
+            return get_the_author();
+        }
+    ));
+}
+
+add_action('rest_api_init', 'university_custom_rest');
+
 function pageBanner (array $args = null) {
 
     if (!$args['title']) {
@@ -29,6 +39,9 @@ function university_files () {
 	wp_enqueue_style('font_awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 	wp_enqueue_style('university_main_styles', get_stylesheet_uri(), false, microtime());
 	wp_enqueue_script('main', get_template_directory_uri() . '/js/scripts-bundled.js', array(), microtime(), true);
+	wp_localize_script('main', 'universityData', array(
+	    'root_url' => get_site_url()
+    ));
 }
 
 add_action('wp_enqueue_scripts', 'university_files');
