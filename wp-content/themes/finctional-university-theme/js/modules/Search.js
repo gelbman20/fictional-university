@@ -48,18 +48,82 @@ export default class Search {
     }
 
     getResults () {
-        $.when(
-            $.getJSON(`/wp-json/wp/v2/pages?search=${this.searchInput.value}`),
-            $.getJSON(`/wp-json/wp/v2/pages?search=${this.searchInput.value}`)
-        ).then((posts, pages) => {
-            const result = posts[0].concat(pages[0]);
-            const items = result.map(({link = '#', title: {rendered : title}}) => `<li><a href="${link}">${title}</a></li>`).join('');
-            const noResults = `<p>No General Information</p>`;
-            const list = items.length ? `<ul class="link-list min-list">${items}</ul>` : noResults;
-            this.searchResults.innerHTML = `<h2 class="search-overlay__section-title">General Information</h2>${list}`;
+        function renderListItem ({title, permalink}) {
+            return `<li><a href="${permalink}">${title}</a></li>`;
+        }
+
+        function renderList (list) {
+            if (!list.length) {
+                return `<p>Result not found</p>`;
+            }
+
+            return `<ul class="link-list min-list">${list.map(renderListItem).join('')}</ul>`;
+        }
+
+        function renderProfessor ({title, image, permalink}) {
+            return `
+                    <li class="professor-card__list-item">
+                        <a class="professor-card" href="${permalink}">
+                            <img src="${image}" alt="" class="professor-card__image">
+                            <span class="professor-card__name">${title}</span>
+                        </a>
+                    </li>`;
+        }
+
+        function renderProfessors (list) {
+            if (!list.length) {
+                return `<p>Result not found</p>`
+            }
+
+            return `<ul class="professor-cards">${list.map(renderProfessor).join('')}</ul>`
+        }
+
+        function renderEvents (events) {
+            if (!events.length) {
+                return `<p>Result not found</p>`
+            }
+
+            return events.map(({title, permalink, month = '', day = '', content}) => {
+                return `
+                    <div class="event-summary">
+                        <a class="event-summary__date t-center" href="${permalink}">
+                            <span class="event-summary__month">${month}</span>
+                            <span class="event-summary__day">${day}</span>
+                        </a>
+                        <div class="event-summary__content">
+                            <h5 class="event-summary__title headline headline--tiny"><a href="${permalink}">${title}</a></h5>
+                            <p>${content} <a href="${permalink}" class="nu gray">Learn more</a></p>
+                        </div>
+                    </div>`
+            }).join('')
+        }
+
+        $.getJSON(`/wp-json/university/v1/search?term=${this.searchInput.value}`, ({generalInfo, professors, programs, events, campuses}) => {
+            const emptyResult = `<p>Result not found</p>`;
+
+            this.searchResults.innerHTML = `
+                <div class="row">
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">General Information</h2>
+                        ${renderList(generalInfo)}
+                    </div>
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">Programs</h2>
+                        ${renderList(programs)}
+                        
+                        <h2 class="search-overlay__section-title">Professors</h2>
+                        ${renderProfessors(professors)}
+                    </div>
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">Campuses</h2>
+                        ${renderList(campuses)}
+                        
+                        <h2 class="search-overlay__section-title">Events</h2>
+                        ${renderEvents(events)}
+                    </div>
+                </div>
+            `;
             this.isSpinnerVisible = false;
-        }, () => {
-            this.searchResults.innerHTML = '<p>Unexpected error, please try again!</p>'
         });
     }
 
