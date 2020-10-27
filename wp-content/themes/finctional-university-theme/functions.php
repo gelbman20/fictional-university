@@ -108,3 +108,24 @@ function noSubsAdminBur () {
 }
 
 add_action('wp_loaded', 'noSubsAdminBur');
+
+// Customize Login Screen
+function headerUrl () {
+    return esc_url(site_url('/'));
+}
+
+add_filter('login_headerurl', 'headerUrl');
+
+
+function loginCSS () {
+    wp_enqueue_style('google_font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+    wp_enqueue_style('university_main_styles', get_stylesheet_uri(), false, microtime());
+}
+
+add_action('login_enqueue_scripts', 'loginCSS');
+
+function loginTitle () {
+    return get_bloginfo();
+}
+
+add_filter('login_headertext', 'loginTitle');
