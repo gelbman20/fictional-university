@@ -9,6 +9,8 @@ Author URI: https://www.linkedin.com/in/andrii-helever-4aa838a1/
 // Custom Events Type
 function university_post_types () {
 	register_post_type('event', array(
+	    'capability_type' => 'event',
+		'map_meta_cap' => true,
 		// По умолчанию slug будет event, а тут меняем на events
 		// по этому слагу будет отображаться страница archive
 		'rewrite' => array(
@@ -60,6 +62,8 @@ function university_post_types () {
     ));
 
 	register_post_type('campus', array(
+        'capability_type' => 'campus',
+        'map_meta_cap' => true,
         'rewrite' => array(
             'slug' => 'campuses'
         ),

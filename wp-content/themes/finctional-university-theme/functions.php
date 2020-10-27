@@ -87,9 +87,24 @@ function university_adjust_queries ($query) {
 
 add_action('pre_get_posts', 'university_adjust_queries');
 
-//function universityMapKey ($api) {
-//    $api['key'] = 'AIzaSyBMmru4FxOlDiATimkitpBZx4VNCFWaIzw';
-//    return $api;
-//}
-//
-//add_filter('acf/fields/google_map/api', 'universityMapKey');
+// Redirect
+function redirectSubsToFrontend () {
+    $currentUser = wp_get_current_user();
+
+    if (count($currentUser->roles) === 1 && $currentUser->roles[0] === 'subscriber') {
+        wp_redirect(site_url('/'));
+        exit;
+    }
+}
+
+add_action('admin_init', 'redirectSubsToFrontend');
+
+function noSubsAdminBur () {
+    $currentUser = wp_get_current_user();
+
+    if (count($currentUser->roles) === 1 && $currentUser->roles[0] === 'subscriber') {
+        show_admin_bar(false);
+    }
+}
+
+add_action('wp_loaded', 'noSubsAdminBur');
